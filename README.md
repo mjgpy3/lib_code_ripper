@@ -4,6 +4,9 @@ Library Code Ripper
 Dependencies
 -----------
 
-`pip`
+pip
 ```sudo apt-get install python-pip```
+
+selenium
+```sudo apt-get install selenium```
 
