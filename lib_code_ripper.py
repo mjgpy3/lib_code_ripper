@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait # available since 2.4.0
 from selenium.webdriver.support import expected_conditions as EC # available since 2.26.0
 
-DEBUG = True
+DEBUG = False
 DILBERT_BOOK = "HD31 .A294 1996"
 
 class LibOfCongBookRetriever:
@@ -21,12 +21,15 @@ class LibOfCongBookRetriever:
 
             if len(th_elements) == 0 or len(td_elements) == 0: continue
             if len(td_elements[0].text) == 0: continue
-            key, value = th_elements[0].text, td_elements[0].text
+            key, value = self.translate_key(th_elements[0].text), td_elements[0].text
 
             if key not in py_object:
                 py_object[key] = value
 
         return py_object
+
+    def translate_key(self, key):
+        return key.lower().replace(" ", "_").replace(":", "").replace(".", "")
 
     def get_book_by_call_number(self, call_number):
         self.driver.get("http://catalog.loc.gov/")
@@ -36,7 +39,7 @@ class LibOfCongBookRetriever:
 
         table = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, "/html/body/form[1]/table/tbody")))
 
-        # Check to make sure that the books was found
+        # Check to make sure that the book was found
         try:
             self.driver.find_element_by_class_name("nohits")
             return None
@@ -50,5 +53,13 @@ if __name__ == '__main__':
     driver = webdriver.PhantomJS() if not DEBUG else webdriver.Firefox()
 
     retriever = LibOfCongBookRetriever(driver)
-    print retriever.get_book_by_call_number(DILBERT_BOOK)
+
+    with open('book_batch.pyon', 'r') as f:
+        call_numbers = eval(f.read())
+
+    results = []
+    for call_number in call_numbers:
+        book = retriever.get_book_by_call_number(call_number)
+        if book:
+            results.append(book)
     driver.close()
