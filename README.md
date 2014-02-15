@@ -10,7 +10,7 @@ pip
 ```sudo apt-get install python-pip```
 
 selenium
-```sudo apt-get install selenium```
+```pip install selenium```
 
 phantomjs
 ```sudo apt-get install phantomjs```
