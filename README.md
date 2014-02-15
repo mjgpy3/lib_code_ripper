@@ -4,7 +4,7 @@ Library Code Ripper
 Dependencies
 -----------
 
-python 1.7
+python 2.7
 
 pip
 ```sudo apt-get install python-pip```
